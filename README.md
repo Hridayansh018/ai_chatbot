@@ -8,7 +8,7 @@ A full-stack AI chatbot application with a **FastAPI** backend and a **Next.js**
 
 | Feature | Description |
 | ------- | ----------- |
-| 🤖 Multi-Model AI | Chat with Gemma, DeepSeek, Llama, Qwen, Devstral, and more via OpenRouter |
+| 🤖 Google Gemini AI | Chat with Google Gemini 2.5 Flash via google-genai |
 | 💬 Multi-Session | Create, switch, and manage multiple conversations |
 | 🎨 Dark & Blue Theme | Premium glassmorphism UI with smooth animations |
 | 📱 Responsive | Optimized for mobile, tablet, and desktop |
@@ -23,7 +23,7 @@ A full-stack AI chatbot application with a **FastAPI** backend and a **Next.js**
 ai_chatbot/
 ├── server/              # FastAPI backend
 │   ├── main.py          # API endpoints
-│   ├── client.py        # OpenRouter client config
+│   ├── client.py        # google-genai client config
 │   ├── schema.py        # Pydantic models
 │   ├── requirements.txt
 │   ├── .env             # API keys (not committed)
@@ -59,7 +59,7 @@ venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 
 # Create .env file with your API key
-echo OPENROUTER_API_KEY=your_key_here > .env
+echo GEMINI_API_KEY=your_key_here > .env
 
 # Start the server
 uvicorn main:app --reload
@@ -94,8 +94,8 @@ Here's a quick reference for all URLs you may need to update:
 
 | What | File | Default | When to Change |
 | ---- | ---- | ------- | -------------- |
-| OpenRouter API Key | `server/.env` | *(required)* | Always — add your key |
-| OpenRouter Base URL | `server/client.py` | `https://openrouter.ai/api/v1` | If using a different AI provider |
+| Google Gemini API Key | `server/.env` | *(required)* | Always — add your key |
+| google-genai client config | `server/client.py` | `google.genai.Client(api_key=...)` | Change if using a different Google AI integration |
 | CORS Allowed Origins | `server/main.py` | `*` (all origins) | Production — restrict to your frontend domain |
 | Server Host/Port | CLI command | `127.0.0.1:8000` | If deploying on a different port or host |
 
@@ -128,9 +128,9 @@ Full API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) (Swagger
 
 | Layer | Technology |
 | ----- | ---------- |
-| Backend | FastAPI, OpenAI SDK, Pydantic, Uvicorn |
+| Backend | FastAPI, google-genai, Pydantic, Uvicorn |
 | Frontend | Next.js 16, React 19, Vanilla CSS |
-| AI Provider | OpenRouter (OpenAI-compatible) |
+| AI Provider | Google Gemini 2.5 Flash via google-genai |
 | Fonts | Inter, JetBrains Mono (Google Fonts) |
 | Markdown | marked.js |
 
