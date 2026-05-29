@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+# pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 from client import client
 import schema
@@ -22,15 +23,13 @@ def chat(request: schema.ChatRequest):
     history = conversations.get(session_id, [SYSTEM_PROMPT])
     history.append({"role":"user","content":request.message})
     try:
-        completion = client.chat.completions.create(
-            model = request.model,
-            messages = history,
-            temperature = 0.7,
-            max_tokens = 2048
-        )
+        response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=request.message
+            )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    reply = completion.choices[0].message.content
+    reply = response.text  
     history.append({"role":"assistant","content":reply})
 
     conversations[session_id] = history

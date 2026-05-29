@@ -1,390 +1,141 @@
-# AI Chatbot API Documentation
+# AI Chatbot
 
-## Overview
-
-This API provides a simple AI chatbot backend using:
-
-* FastAPI
-* OpenRouter/OpenAI-compatible models
-* Session-based conversation memory
-
-Features:
-
-* Multi-session chat
-* Conversation history
-* Session management
-* Model selection
-* Delete chat sessions
+A full-stack AI chatbot application with a **FastAPI** backend and a **Next.js** frontend, featuring multi-session conversations, model selection, and a premium dark & blue theme.
 
 ---
 
-# Base URL
+## 📸 Overview
 
-```text
-http://127.0.0.1:8000
+| Feature | Description |
+| ------- | ----------- |
+| 🤖 Multi-Model AI | Chat with Gemma, DeepSeek, Llama, Qwen, Devstral, and more via OpenRouter |
+| 💬 Multi-Session | Create, switch, and manage multiple conversations |
+| 🎨 Dark & Blue Theme | Premium glassmorphism UI with smooth animations |
+| 📱 Responsive | Optimized for mobile, tablet, and desktop |
+| 📝 Markdown Support | AI responses rendered as rich markdown with code copy |
+| 🗑️ Session Management | Create, view, and delete conversations |
+
+---
+
+## 🏗️ Project Structure
+
+```
+ai_chatbot/
+├── server/              # FastAPI backend
+│   ├── main.py          # API endpoints
+│   ├── client.py        # OpenRouter client config
+│   ├── schema.py        # Pydantic models
+│   ├── requirements.txt
+│   ├── .env             # API keys (not committed)
+│
+├── client/              # Next.js frontend
+│   ├── app/
+│   │   ├── components/  # React components
+│   │   ├── lib/api.js   # API utility functions
+│   │   ├── constants.js # Model definitions
+│   │   ├── globals.css  # Dark & blue theme
+│   │   ├── layout.js    # Root layout
+│   │   └── page.js      # Main chat page
+│   ├── .env.example     # Environment template
+│
+└── README.md            # This file
 ```
 
 ---
 
-# Authentication
+## 🚀 Quick Start
 
-Currently, no authentication is required.
-
----
-
-# Endpoints
-
----
-
-# 1. Create Chat Message
-
-## Endpoint
-
-```http
-POST /chat
-```
-
-## Description
-
-Sends a message to the AI model and continues the conversation using the provided session ID.
-
-If no session ID is provided, a new session is automatically created.
-
----
-
-## Request Body
-
-```json
-{
-  "message": "What is Python?",
-  "session_id": "optional-session-id",
-  "model": "google/gemma-4-26b-a4b-it:free"
-}
-```
-
----
-
-## Request Fields
-
-| Field      | Type   | Required | Description              |
-| ---------- | ------ | -------- | ------------------------ |
-| message    | string | Yes      | User message             |
-| session_id | string | No       | Existing chat session ID |
-| model      | string | Yes      | AI model name            |
-
----
-
-## Example Request
-
-```json
-{
-  "message": "Explain REST APIs",
-  "model": "deepseek/deepseek-chat"
-}
-```
-
----
-
-## Example Response
-
-```json
-{
-  "session_id": "a1b2c3d4",
-  "reply": "REST APIs allow applications to communicate over HTTP."
-}
-```
-
----
-
-## Response Fields
-
-| Field      | Type   | Description             |
-| ---------- | ------ | ----------------------- |
-| session_id | string | Chat session identifier |
-| reply      | string | AI-generated response   |
-
----
-
-# 2. Get Conversation History
-
-## Endpoint
-
-```http
-GET /conversations/{session_id}
-```
-
-## Description
-
-Retrieves the complete conversation history for a session.
-
----
-
-## Path Parameters
-
-| Parameter  | Type   | Description     |
-| ---------- | ------ | --------------- |
-| session_id | string | Chat session ID |
-
----
-
-## Example Request
-
-```http
-GET /conversations/a1b2c3d4
-```
-
----
-
-## Example Response
-
-```json
-{
-  "session_id": "a1b2c3d4",
-  "messages": [
-    {
-      "role": "system",
-      "content": "You are a helpful assistant."
-    },
-    {
-      "role": "user",
-      "content": "What is Python?"
-    },
-    {
-      "role": "assistant",
-      "content": "Python is a programming language."
-    }
-  ]
-}
-```
-
----
-
-# 3. Delete Conversation
-
-## Endpoint
-
-```http
-DELETE /conversations/{session_id}
-```
-
-## Description
-
-Deletes a conversation session and all associated messages.
-
----
-
-## Path Parameters
-
-| Parameter  | Type   | Description     |
-| ---------- | ------ | --------------- |
-| session_id | string | Chat session ID |
-
----
-
-## Example Request
-
-```http
-DELETE /conversations/a1b2c3d4
-```
-
----
-
-## Example Response
-
-```json
-{
-  "detail": "Session deleted"
-}
-```
-
----
-
-# 4. List All Sessions
-
-## Endpoint
-
-```http
-GET /sessions
-```
-
-## Description
-
-Returns all active conversation session IDs.
-
----
-
-## Example Request
-
-```http
-GET /sessions
-```
-
----
-
-## Example Response
-
-```json
-{
-  "sessions": [
-    "a1b2c3d4",
-    "e5f6g7h8"
-  ]
-}
-```
-
----
-
-# Conversation Memory Flow
-
-```text
-Frontend
-    ↓
-POST /chat
-    ↓
-Backend loads session history
-    ↓
-AI generates response
-    ↓
-Conversation stored in memory
-```
-
----
-
-# Session Lifecycle
-
-## New Session
-
-If `session_id` is not provided:
-
-```json
-{
-  "message": "Hello",
-  "model": "deepseek/deepseek-chat"
-}
-```
-
-Backend automatically creates a new session ID.
-
----
-
-## Existing Session
-
-To continue an existing conversation:
-
-```json
-{
-  "message": "Explain FastAPI",
-  "session_id": "a1b2c3d4",
-  "model": "deepseek/deepseek-chat"
-}
-```
-
----
-
-# Supported AI Models
-
-Examples:
-
-```text
-deepseek/deepseek-chat
-google/gemma-4-26b-a4b-it:free
-meta-llama/llama-3.1-8b-instruct:free
-qwen/qwen-2.5-72b-instruct:free
-```
-
-Browse available models:
-
-https://openrouter.ai/models
-
----
-
-# Error Responses
-
-## Session Not Found
-
-```json
-{
-  "detail": "Session not found"
-}
-```
-
-Status Code:
-
-```text
-404
-```
-
----
-
-## AI Provider Error
-
-```json
-{
-  "detail": "Provider returned an error"
-}
-```
-
-Status Code:
-
-```text
-500
-```
-
----
-
-# Current Limitations
-
-Conversation memory is currently stored in RAM:
-
-```python
-conversations = {}
-```
-
-This means:
-
-* conversations are lost after server restart
-* memory is not shared across servers
-* not suitable for production scaling
-
----
-
-# Recommended Production Improvements
-
-* PostgreSQL for persistent chat storage
-* Redis for fast conversation memory
-* User authentication
-* Streaming responses
-* Rate limiting
-* Token usage tracking
-* WebSocket/SSE support
-
----
-
-# Running the API
-
-## Start Server
+### 1. Start the Backend
 
 ```bash
+cd server
+
+# Create and activate virtual environment
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS/Linux
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file with your API key
+echo OPENROUTER_API_KEY=your_key_here > .env
+
+# Start the server
 uvicorn main:app --reload
 ```
 
----
+Server runs at: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-# Interactive Swagger Docs
+### 2. Start the Frontend
 
-Open:
+```bash
+cd client
 
-```text
-http://127.0.0.1:8000/docs
+# Install dependencies
+npm install
+
+# Copy and configure environment
+cp .env.example .env.local
+
+# Start the development server
+npm run dev
 ```
 
+Frontend runs at: [http://localhost:3000](http://localhost:3000)
+
 ---
 
-# Tech Stack
+## ⚠️ URL Configuration Guide
 
-* FastAPI
-* OpenRouter
-* OpenAI Python SDK
-* Pydantic
-* UUID session management
-* CORS middleware
+Here's a quick reference for all URLs you may need to update:
+
+### Server Side
+
+| What | File | Default | When to Change |
+| ---- | ---- | ------- | -------------- |
+| OpenRouter API Key | `server/.env` | *(required)* | Always — add your key |
+| OpenRouter Base URL | `server/client.py` | `https://openrouter.ai/api/v1` | If using a different AI provider |
+| CORS Allowed Origins | `server/main.py` | `*` (all origins) | Production — restrict to your frontend domain |
+| Server Host/Port | CLI command | `127.0.0.1:8000` | If deploying on a different port or host |
+
+### Client Side
+
+| What | File | Default | When to Change |
+| ---- | ---- | ------- | -------------- |
+| Backend API URL | `client/.env.local` | `http://127.0.0.1:8000` | When deploying or if server runs on a different port |
+| Fallback API URL | `client/app/lib/api.js` | `http://127.0.0.1:8000` | Only if not using `.env.local` |
+| AI Model List | `client/app/constants.js` | 5 free models | To add/remove available models |
+
+> **Tip:** For production, set `NEXT_PUBLIC_API_URL` in your hosting provider's environment variables (Vercel, Netlify, etc.) — no code changes needed.
+
+---
+
+## 📡 API Endpoints
+
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| `POST` | `/chat` | Send a message and get an AI reply |
+| `GET` | `/conversations/{session_id}` | Retrieve conversation history |
+| `DELETE` | `/conversations/{session_id}` | Delete a conversation |
+| `GET` | `/sessions` | List all active session IDs |
+
+Full API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) (Swagger UI)
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+| ----- | ---------- |
+| Backend | FastAPI, OpenAI SDK, Pydantic, Uvicorn |
+| Frontend | Next.js 16, React 19, Vanilla CSS |
+| AI Provider | OpenRouter (OpenAI-compatible) |
+| Fonts | Inter, JetBrains Mono (Google Fonts) |
+| Markdown | marked.js |
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
